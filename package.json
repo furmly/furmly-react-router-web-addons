@@ -1,0 +1,20 @@
+{
+  "name": "furmly-react-router-web-addons",
+  "version": "1.0.0",
+  "description": "This lib contains addons for furmly that implement navigation logic using react-router",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "Furmly",
+    "React-Router"
+  ],
+  "author": "Chidi Onuekwusi",
+  "license": "ISC",
+  "dependencies": {
+    "furmly-client": "git+https://github.com/chidionuekwusi/furmly-client.git#navigation-context",
+    "query-string": "^6.2.0",
+    "react-router-redux": "^4.0.8"
+  }
+}
