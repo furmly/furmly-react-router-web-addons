@@ -20,7 +20,7 @@ const extractLocationAndParams = function({ params, key }, context) {
   }
   let path = loc.path
     .split("/")
-    .map(x => {
+    .map(x => { 
       if (x.indexOf(":") !== -1) return params[x.substring(1)];
       return x;
     })

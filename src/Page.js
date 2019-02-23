@@ -3,7 +3,7 @@ const { connect } = require("react-redux");
 const { push, replace } = require("react-router-redux");
 const qs = require("query-string");
 
-module.exports = function(NestedComponent, loginUrl = "/", homeUrl = "/home") {
+module.exports = function(map,NestedComponent, loginUrl = "/", homeUrl = "/home") {
   function mapDispatchToProps(dispatch) {
     return { dispatch };
   }
@@ -21,18 +21,29 @@ module.exports = function(NestedComponent, loginUrl = "/", homeUrl = "/home") {
       this.oneStepBack = this.oneStepBack.bind(this);
       this.openProcess = this.openProcess.bind(this);
       this.backToLogin = this.backToLogin.bind(this);
+      this.del = "?";
     }
-    componentDidMount() {
-      window.onpopstate = () => {
-        // modify this function to do nothing if there is only one one item left in the stack if at home
-        // and navigate backwards if it is outside.
-        if (this.noPlaceToGo()) {
-          if (NestedComponent.shouldClearStackOnEmpty) {
-            window.onpopstate = null;
-            this.props.furmlyNavigator.clearStack();
-            return;
-          }
-        } else this.oneStepBack();
+    componentWillMount() {
+      window.onhashchange = ({ newURL, oldURL }) => {
+        const [nUrl, nQuery] = newURL.split(this.del);
+        const [oUrl, oQuery] = oldURL.split(this.del);
+        const { currentStep: nStep = "0" } = qs.parse(nQuery);
+        const { currentStep: oStep = "0" } = qs.parse(oQuery);
+
+        if (
+          nUrl !== oUrl ||
+          (nUrl == oUrl && parseInt(nStep) < parseInt(oStep))
+        ) {
+          // modify this function to do nothing if there is only one one item left in the stack if at home
+          // and navigate backwards if it is outside.
+          if (this.noPlaceToGo()) {
+            if (NestedComponent.shouldClearStackOnEmpty) {
+              window.onpopstate = null;
+              this.props.furmlyNavigator.clearStack();
+              return;
+            }
+          } else this.oneStepBack();
+        }
       };
 
       if (!this.props.stack.length && NestedComponent.pushVisible) {
@@ -57,9 +68,12 @@ module.exports = function(NestedComponent, loginUrl = "/", homeUrl = "/home") {
             )
           }
         ];
-        if (this.props.stack.length) {
-          arr.unshift(this.props.stack[0]);
-        }
+        /* Uncomment this to support a furmly homepage in the future.
+         *
+         * if (this.props.stack.length) {
+         *   arr.unshift(this.props.stack[0]);
+         * }
+         */
         return !shouldPush
           ? this.props.furmlyNavigator.replaceStack(arr)
           : this.props.furmlyNavigator.navigate(arr[0]);
@@ -106,7 +120,7 @@ module.exports = function(NestedComponent, loginUrl = "/", homeUrl = "/home") {
       connect(
         mapStateToProps,
         null
-      )(Base),
+      )(map.withNavigation(Base)),
     Base,
     mapDispatchToProps,
     mapStateToProps

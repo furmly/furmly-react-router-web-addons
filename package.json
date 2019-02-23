@@ -12,8 +12,10 @@
   ],
   "author": "Chidi Onuekwusi",
   "license": "ISC",
+  "peerDependencies": {
+    "furmly-client": "git+https://github.com/chidionuekwusi/furmly-client.git"
+  },
   "dependencies": {
-    "furmly-client": "git+https://github.com/chidionuekwusi/furmly-client.git#navigation-context",
     "query-string": "^6.2.0",
     "react-router-redux": "^4.0.8"
   }
