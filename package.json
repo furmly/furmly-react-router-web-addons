@@ -13,7 +13,7 @@
   "author": "Chidi Onuekwusi",
   "license": "ISC",
   "peerDependencies": {
-    "furmly-client": "git+https://github.com/chidionuekwusi/furmly-client.git"
+    "furmly-client": "^1.0.0"
   },
   "dependencies": {
     "query-string": "^6.2.0",
