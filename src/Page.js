@@ -3,7 +3,12 @@ const { connect } = require("react-redux");
 const { push, replace } = require("react-router-redux");
 const qs = require("query-string");
 
-module.exports = function(map,NestedComponent, loginUrl = "/", homeUrl = "/home") {
+module.exports = function(
+  map,
+  NestedComponent,
+  loginUrl = "/",
+  homeUrl = "/home"
+) {
   function mapDispatchToProps(dispatch) {
     return { dispatch };
   }
@@ -78,10 +83,8 @@ module.exports = function(map,NestedComponent, loginUrl = "/", homeUrl = "/home"
           ? this.props.furmlyNavigator.replaceStack(arr)
           : this.props.furmlyNavigator.navigate(arr[0]);
       }
-
-      return push(
-        `${homeUrl}/${item.value[0].toUpperCase() + item.value.substring(1)}`
-      );
+      this.props.furmlyNavigator.clearStack();
+      window.location.hash = `${homeUrl}/${item.value}`;
     }
     componentWillUnmount() {}
     backToLogin() {
