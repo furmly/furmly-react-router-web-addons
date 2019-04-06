@@ -1,6 +1,6 @@
 const React = require("react");
 const { connect } = require("react-redux");
-const { push, replace } = require("react-router-redux");
+const { replace } = require("react-router-redux");
 const qs = require("query-string");
 
 module.exports = function(
@@ -52,13 +52,11 @@ module.exports = function(
       };
 
       if (!this.props.stack.length && NestedComponent.pushVisible) {
-        let segments = location.pathname.split("/");
+        let [urlSegment, query] = location.href.split(this.del);
+        let url = urlSegment.split("/");
         this.props.furmlyNavigator.visible({
           key: "Furmly",
-          params: Object.assign(
-            { id: segments[segments.length - 1] },
-            qs.parse(location.search)
-          )
+          params: Object.assign({ id: url[url.length - 1] }, qs.parse(query))
         });
       }
     }
