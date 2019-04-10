@@ -20,13 +20,16 @@ const extractLocationAndParams = function({ params, key }, context) {
   }
   let path = loc.path
     .split("/")
-    .map(x => { 
+    .map(x => {
       if (x.indexOf(":") !== -1) return params[x.substring(1)];
       return x;
     })
     .join("/");
   if (params.fetchParams) {
-    path += `?${qs.stringify(params.fetchParams)}`;
+    path += `?${qs.stringify(params.fetchParams) +
+      ((params.currentStep && `&currentStep=${params.currentStep}`) || "")}`;
+  } else {
+    if (params.currentStep) path += `?currentStep=${params.currentStep}`;
   }
   return path;
 };
@@ -40,9 +43,12 @@ module.exports = class {
     let path = extractLocationAndParams(args, this.context);
     return this.dispatch(setParams(args)), this.dispatch(push(path));
   }
-  replaceStack(arr) {
+  replaceStack(arr, preserveData) {
     let path = extractLocationAndParams(arr[arr.length - 1], this.context);
-    return this.dispatch(replaceStack(arr)), this.dispatch(replace(path));
+    return (
+      this.dispatch(replaceStack(arr, preserveData)),
+      this.dispatch(replace(path))
+    );
   }
   navigate(args) {
     let path = extractLocationAndParams(args, this.context);
