@@ -1,6 +1,6 @@
 {
   "name": "furmly-react-router-web-addons",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This lib contains addons for furmly that implement navigation logic using react-router",
   "main": "index.js",
   "scripts": {
