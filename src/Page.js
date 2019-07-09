@@ -27,6 +27,7 @@ module.exports = function(
       this.openProcess = this.openProcess.bind(this);
       this.backToLogin = this.backToLogin.bind(this);
       this.getParamsFromUrl = this.getParamsFromUrl.bind(this);
+      this.refreshStack = this.refreshStack.bind(this);
       this.del = "?";
     }
     componentWillMount() {
@@ -54,14 +55,7 @@ module.exports = function(
           //user is manipulating the url to skip steps.
           const top = this.props.stack[this.props.stack.length - 1];
           if (nStepInt !== top.params.currentStep) {
-            const { id, fetchParams, currentStep } = top.params;
-            const newStack = this.props.stack.slice();
-            newStack.pop();
-            newStack.push({
-              ...top,
-              params: { id, fetchParams, currentStep }
-            });
-            this.props.furmlyNavigator.replaceStack(newStack, true);
+            this.refreshStack(top);
           }
         }
       };
@@ -85,16 +79,19 @@ module.exports = function(
               current.currentStep == 0
             ))
         ) {
-          const { id, fetchParams, currentStep } = top.params;
-          const newStack = this.props.stack.slice();
-          newStack.pop();
-          newStack.push({
-            ...top,
-            params: { id, fetchParams, currentStep }
-          });
-          this.props.furmlyNavigator.replaceStack(newStack, true);
+          this.refreshStack(top);
         }
       }
+    }
+    refreshStack(top) {
+      const { id, fetchParams, currentStep } = top.params;
+      const newStack = this.props.stack.slice();
+      newStack.pop();
+      newStack.push({
+        ...top,
+        params: { id, fetchParams, currentStep }
+      });
+      this.props.furmlyNavigator.replaceStack(newStack, true);
     }
     getParamsFromUrl() {
       let [urlSegment, query] = location.href.split(this.del);
@@ -116,12 +113,6 @@ module.exports = function(
             )
           }
         ];
-        /* Uncomment this to support a furmly homepage in the future.
-         *
-         * if (this.props.stack.length) {
-         *   arr.unshift(this.props.stack[0]);
-         * }
-         */
         return !shouldPush
           ? this.props.furmlyNavigator.replaceStack(arr)
           : this.props.furmlyNavigator.navigate(arr[0]);
